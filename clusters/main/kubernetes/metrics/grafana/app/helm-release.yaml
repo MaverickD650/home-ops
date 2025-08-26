@@ -64,7 +64,7 @@ spec:
             enabled: false
           certManager:
             enabled: true
-            certificateIssuer: cloudflared
+            certificateIssuer: domain-0-le-prod
         hosts:
           - host: monitor.${DOMAIN_0}
             paths:
