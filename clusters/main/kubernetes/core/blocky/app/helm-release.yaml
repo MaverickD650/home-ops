@@ -48,7 +48,7 @@ spec:
       - https://1.0.0.1/dns-query
 
     k8sgateway:
-      watchedResources: ["Ingress", "Service", "DNSEndpoint"]
+      watchedResources: ["Ingress", "Service"]
       # -- list of processed domains
       domains:
       - domain: "${BASE_DOMAIN}"
