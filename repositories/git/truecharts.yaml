@@ -12,8 +12,5 @@ spec:
     branch: master
   secretRef:
     name: deploy-key
-  ignore: |
-    # exclude all
-    /*
-    # include flux directories
-    !/repositories
+  sparseCheckout:
+    - repositories
