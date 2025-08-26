@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -16,6 +16,7 @@ spec:
         name: truecharts
         namespace: flux-system
       interval: 15m
+      reconcileStrategy: Revision
   timeout: 20m
   maxHistory: 3
   install:
@@ -29,10 +30,10 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    ## set stopAll to "true" if you do not want to use blocky
-    # and/or disable its service
-    global:
-      stopAll: false
+    k8sgatewayImage:
+      repository: ghcr.io/k8s-gateway/k8s_gateway
+      pullPolicy: IfNotPresent
+      tag: 1.5.2@sha256:b989a0112c1da63ed57fb538ec7a3b788cb71589f1d94ce9b831e5ccc7babd4f
     service:
       dns:
         externalTrafficPolicy: Local
@@ -41,17 +42,22 @@ spec:
         integrations:
           metallb:
             enabled: true
+    defaultUpstreams:
+      # Cloudflare
+      - https://1.1.1.1/dns-query
+      - https://1.0.0.1/dns-query
+
     k8sgateway:
+      watchedResources: ["Ingress", "Service", "DNSEndpoint"]
       # -- list of processed domains
       domains:
-      - domain: "${DOMAIN_0}"
+      - domain: "${BASE_DOMAIN}"
         # -- Optional configuration option for DNS01 challenge that will redirect all acme
         # challenge requests to external cloud domain (e.g. managed by cert-manager)
         # See: https://cert-manager.io/docs/configuration/acme/dns01/
         dnsChallenge:
           enabled: false
           domain: dns01.clouddns.com
-
       forward:
         enabled: false
         primary: tls://1.1.1.1
@@ -60,16 +66,64 @@ spec:
           - name: tls_servername
             value: cloudflare-dns.com
 
-    # CANNOT be defined in above yaml section
-    queryLog:
-      # optional one of: mysql, postgresql, csv, csv-client. If empty, log to console only
-      type: ""
-
+    rbac:
+      main:
+        rules:
+          - apiGroups:
+              - apiextensions.k8s.io
+            resources:
+              - customresourcedefinitions
+            verbs:
+              - get
+              - list
+              - watch
+          - apiGroups:
+              - ""
+            resources:
+              - services
+              - namespaces
+            verbs:
+              - list
+              - watch
+          - apiGroups:
+              - extensions
+              - networking.k8s.io
+            resources:
+              - ingresses
+            verbs:
+              - list
+              - watch
+          - apiGroups:
+              - gateway.networking.k8s.io
+            resources:
+              - "*"
+            verbs:
+              - "watch"
+              - "list"
+          - apiGroups:
+              - externaldns.k8s.io
+            resources:
+              - dnsendpoints
+            verbs:
+              - get
+              - watch
+              - list
+          - apiGroups:
+              - externaldns.k8s.io
+            resources:
+              - dnsendpoints/status
+            verbs:
+              - "*"
     configmap:
       dashboard:
         enabled: false
       datasource:
         enabled: false
+
+    # CANNOT be defined in above yaml section
+    queryLog:
+      # optional one of: mysql, postgresql, csv, csv-client. If empty, log to console only
+      type: ""
 
     cnpg:
       main:
