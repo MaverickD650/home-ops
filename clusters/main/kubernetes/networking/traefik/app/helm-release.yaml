@@ -1,0 +1,187 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: traefik
+      version: 37.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+      interval: 15m
+  timeout: 20m
+  maxHistory: 3
+  driftDetection:
+    mode: enabled
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: traefik-crds
+      namespace: traefik
+  values:
+    additionalArguments:
+      - "--providers.kubernetesingress.allowexternalnameservices=true"
+      - "--serverstransport.insecureskipverify=true"
+    deployment:
+      enabled: true
+      replicas: 2
+      revisionHistoryLimit: 4
+    dashboard:
+      enabled: true
+    service:
+      enabled: true
+      type: LoadBalancer
+      annotations:
+        metallb.io/ip-allocated-from-pool: main
+        metallb.io/loadBalancerIPs: ${TRAEFIK_IP}
+      spec:
+        externalTrafficPolicy: Local
+    logs:
+      general:
+        level: DEBUG
+      access:
+        enabled: true
+    ingressClass:
+      enabled: true
+      isDefaultClass: true
+    tlsOptions:
+      default:
+        sniStrict: false
+        minVersion: VersionTLS12
+        curvePreferences:
+          - CurveP521
+          - CurveP384
+          - X25519
+        cipherSuites:
+          - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+          - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+          - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256
+          - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256
+          - TLS_AES_128_GCM_SHA256
+          - TLS_AES_256_GCM_SHA384
+          - TLS_CHACHA20_POLY1305_SHA256
+    providers:
+      kubernetesCRD:
+        enabled: true
+        allowCrossNamespace: true
+        allowExternalNameServices: true
+      kubernetesIngress:
+        enabled: true
+        namespaces: []
+        publishedService:
+          enabled: true
+        ingressClass: traefik
+        exposedByDefault: false
+      kubernetesGateway:
+        enabled: true
+    tlsStore:
+      default:
+        defaultCertificate:
+          secretName: "certificate-issuer-cloudflared-wildcard"
+
+    gateway:
+      enabled: true
+      name: "traefik"
+      listeners:
+        web:
+          namespacePolicy:
+            from: All
+        websecure:
+          port: 8443
+          hostname: "*.${DOMAIN_0}"
+          protocol: HTTPS
+          namespacePolicy:
+            from: All
+          certificateRefs:
+            - name: certificate-issuer-cloudflared-wildcard
+              kind: Secret
+              group: ""
+          mode: Terminate
+
+    ingressRoute:
+      dashboard:
+        enabled: true
+        entryPoints: ["websecure"]
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: traefik.${DOMAIN_0}
+        matchRule: Host(`traefik.${DOMAIN_0}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+        tls:
+          secretName: "certificate-issuer-cloudflared-wildcard"
+        middlewares:
+          - name: chain-basic
+            namespace: traefik
+    experimental:
+      fastProxy:
+        enabled: true
+    metrics:
+      prometheus:
+        service:
+          enabled: true
+        disableAPICheck: false
+        serviceMonitor:
+          enabled: true
+          metricRelabelings:
+            - sourceLabels: [__name__]
+              separator: ;
+              regex: ^fluentd_output_status_buffer_(oldest|newest)_.+
+              replacement: $1
+              action: drop
+            - action: drop
+              regex: '^go_.*'
+              sourceLabels: [__name__]
+            - action: drop
+              regex: 'traefik_service_request_duration_seconds_bucket|traefik_entrypoint_request_duration_seconds_bucket'
+              sourceLabels: [__name__]
+          relabelings:
+            - sourceLabels: [__meta_kubernetes_pod_node_name]
+              separator: ;
+              regex: ^(.*)$
+              targetLabel: nodename
+              replacement: $1
+              action: replace
+          jobLabel: traefik
+          interval: 30s
+          honorLabels: true
+        headerLabels:
+          user_id: X-User-Id
+          tenant: X-Tenant
+        prometheusRule:
+          enabled: true
+          rules:
+            - alert: TraefikDown
+              expr: up{job="traefik"} == 0
+              for: 5m
+              labels:
+                context: traefik
+                severity: warning
+              annotations:
+                summary: "Traefik Down"
+                description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
+    ports:
+      traefik:
+        expose:
+          default: true
+      web:
+        redirections:
+          port: websecure
+      websecure:
+        tls:
+          enabled: true
+          options: "default"

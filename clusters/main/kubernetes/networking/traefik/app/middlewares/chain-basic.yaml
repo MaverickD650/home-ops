@@ -1,0 +1,55 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: compress
+  namespace: traefik
+spec:
+  compress: {}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-ratelimit
+  namespace: traefik
+spec:
+  rateLimit:
+    average: 600
+    burst: 400
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-secure-headers
+  namespace: traefik
+spec:
+  headers:
+    accessControlAllowMethods:
+      - GET
+      - OPTIONS
+      - HEAD
+      - PUT
+    accessControlMaxAge: 100
+    stsSeconds: 63072000
+    forceSTSHeader: true
+    contentTypeNosniff: true
+    browserXssFilter: true
+    referrerPolicy: same-origin
+    customRequestHeaders:
+      X-Forwarded-Proto: "https"
+    customResponseHeaders:
+      server: ''
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: chain-basic
+  namespace: traefik
+spec:
+  chain:
+    middlewares:
+      - name: basic-ratelimit
+        namespace: traefik
+      - name: basic-secure-headers
+        namespace: traefik
+      - name: compress
+        namespace: traefik

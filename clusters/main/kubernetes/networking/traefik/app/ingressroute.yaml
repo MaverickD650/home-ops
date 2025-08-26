@@ -1,0 +1,15 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-api-internal
+  namespace: traefik
+spec:
+  entryPoints:
+    - traefik
+  routes:
+    - match: Host(`traefik.traefik.svc.cluster.local`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      kind: Rule
+      services:
+        - kind: TraefikService
+          name: api@internal
