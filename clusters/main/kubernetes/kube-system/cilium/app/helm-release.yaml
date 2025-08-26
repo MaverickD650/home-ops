@@ -39,9 +39,18 @@ spec:
     # autoDirectNodeRoutes: true
     # routingMode: native
     hubble:
-      enabled: false
+      enabled: true
+      relay:
+        enabled: true
+        rollOutPods: true
+        prometheus:
+          serviceMonitor:
+            enabled: true
+      ui:
+        enabled: true
+        rollOutPods: true
     cluster:
-      name: ${CLUSTERNAME}
+      name: main
       id: 1
     autoDirectNodeRoutes: true
     bandwidthManager:
@@ -104,4 +113,21 @@ spec:
     operator:
       rollOutPods: true
       replicas: 1
+      prometheus:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      dashboards:
+        enabled: true
+        annotations:
+          grafana_folder: Cilium
+    prometheus:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        trustCRDsExist: true
+    dashboards:
+      enabled: true
+      annotations:
+        grafana_folder: Cilium
     rollOutCiliumPods: true
