@@ -78,6 +78,7 @@ spec:
 
     cnpg:
       main:
+        mode: recovery
         cluster:
           singleNode: true
         backups:
