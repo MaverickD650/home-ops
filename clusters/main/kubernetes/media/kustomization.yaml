@@ -5,3 +5,4 @@ resources:
   - kavita/ks.yaml
   - namespace.yaml
   - paperless-ngx/ks.yaml
+  - stash/ks.yaml
