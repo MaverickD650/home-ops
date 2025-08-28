@@ -5,3 +5,4 @@ resources:
   - kubernetes-dashboard/ks.yaml
   - linkwarden/ks.yaml
   - mealie/ks.yaml
+  - snippet-box/ks.yaml
