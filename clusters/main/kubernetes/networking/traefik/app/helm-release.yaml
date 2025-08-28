@@ -174,6 +174,29 @@ spec:
               annotations:
                 summary: "Traefik Down"
                 description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
+    gatus:
+      endpoints:
+        - name: Traefik
+          group: Infrastructure
+          url: "http://traefik.traefik.svc.cluster.local:8080/ping"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
     ports:
       traefik:
         expose:
