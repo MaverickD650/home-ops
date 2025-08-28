@@ -4,3 +4,4 @@ resources:
   - filebrowser/ks.yaml
   - kavita/ks.yaml
   - namespace.yaml
+  - paperless-ngx/ks.yaml
