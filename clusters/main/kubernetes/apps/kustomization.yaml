@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - freshrss/ks.yaml
   - kubernetes-dashboard/ks.yaml
+  - linkwarden/ks.yaml
