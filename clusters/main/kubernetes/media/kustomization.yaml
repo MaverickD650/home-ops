@@ -7,5 +7,6 @@ resources:
   - kavita/ks.yaml
   - namespace.yaml
   - paperless-ngx/ks.yaml
+  - plex/ks.yaml
   - stash/ks.yaml
   - stash2/ks.yaml
