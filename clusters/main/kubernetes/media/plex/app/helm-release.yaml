@@ -58,13 +58,6 @@ spec:
           metallb:
             enabled: true
 
-      gatus:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            {{- $.Values.gatus | toYaml | nindent 2 }}
     gatus:
       endpoints:
         - name: Plex
@@ -80,7 +73,14 @@ spec:
             - type: discord
               description: "healthcheck failed"
               send-on-resolved: true
-
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
     ingress:
       main:
         enabled: true
