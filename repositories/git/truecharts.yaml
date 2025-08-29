@@ -11,6 +11,6 @@ spec:
   ref:
     branch: master
   secretRef:
-    name: deploy-key
+    name: githubapp
   sparseCheckout:
     - repositories

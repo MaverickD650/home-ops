@@ -1,0 +1,129 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lldap
+  namespace: lldap
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: lldap
+      version: 8.3.3
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+      interval: 15m
+      reconcileStrategy: Revision
+  timeout: 20m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    credentials:
+      s3:
+        type: s3
+        url: "${S3URL}"
+        bucket: "${S3PREFIX}-lldap"
+        accessKey: "${S3ID}"
+        secretKey: "${S3KEY}"
+        encrKey: "${S3KEY}"
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                LLDAP_LDAP_USER_DN: "${LLUSERDN}"
+                LLDAP_LDAP_USER_EMAIL: "${LLUSEREMAIL}"
+                LLDAP_LDAP_USER_PASS: "${LLUSERPASS}"
+                LLDAP_HTTP_URL: "${LLURL}"
+                LLDAP_LDAP_BASE_DN: "${LLBASEDN}"
+                LLDAP_SMTP_OPTIONS__FROM: LLDAP Admin <${SMTP_EMAIL}>
+                LLDAP_SMTP_OPTIONS__PASSWORD: ${SMTP_PASSWORD}
+                LLDAP_SMTP_OPTIONS__PORT: 2525
+                LLDAP_SMTP_OPTIONS__REPLY_TO: Do not reply <${SMTP_EMAIL}>
+                LLDAP_SMTP_OPTIONS__SERVER: ${SMTP_HOST}
+                LLDAP_SMTP_OPTIONS__SMTP_ENCRYPTION: TLS
+                LLDAP_SMTP_OPTIONS__USER: ${SMTP_USER}
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: 'true'
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-chain-basic@kubernetescrd
+        integrations:
+          traefik:
+            enabled: false
+          certManager:
+            enabled: true
+            certificateIssuer: domain-0-le-prod
+        hosts:
+          - host: lldap.${DOMAIN_0}
+            paths:
+              - path: /
+                pathType: Prefix
+    gatus:
+      endpoints:
+        - name: LLDAP
+          group: Auth
+          url: "http://lldap.lldap.svc.cluster.local:17170"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
+    cnpg:
+      main:
+        mode: recovery
+        cluster:
+          singleNode: true
+        backups:
+          enabled: true
+          credentials: s3
+          scheduledBackups:
+            - name: daily-backup
+              schedule: "0 5 * * *"
+              backupOwnerReference: self
+              immediate: true
+              suspend: false
+        recovery:
+          method: object_store
+          credentials: s3
+    persistence:
+      data:
+        volsync:
+          - name: data
+            type: restic
+            credentials: s3
+            dest:
+              enabled: true
+            src:
+              enabled: true
+              trigger:
+                schedule: "0 5 0 * * *"

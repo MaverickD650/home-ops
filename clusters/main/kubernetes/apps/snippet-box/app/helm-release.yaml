@@ -1,0 +1,103 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: snippet-box
+  namespace: snippet-box
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: snippet-box
+      version: 10.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+      interval: 15m
+      reconcileStrategy: Revision
+  timeout: 20m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  values:
+    credentials:
+      s3:
+        type: s3
+        url: "${S3URL}"
+        bucket: "${S3PREFIX}-snippet-box"
+        accessKey: "${S3ID}"
+        secretKey: "${S3KEY}"
+        encrKey: "${S3KEY}"
+    resources:
+      requests:
+        cpu: 10m
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: 'true'
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-chain-basic@kubernetescrd
+        integrations:
+          traefik:
+            enabled: false
+          certManager:
+            enabled: true
+            certificateIssuer: domain-0-le-prod
+        hosts:
+          - host: snippet.${DOMAIN_0}
+            paths:
+              - path: /
+                pathType: Prefix
+    gatus:
+      endpoints:
+        - name: Snippet Box
+          group: Apps
+          url: "http://snippet-box.snippet-box.svc.cluster.local:5039"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
+    persistence:
+      data:
+        volsync:
+        - name: data
+          type: restic
+          credentials: s3
+          dest:
+            enabled: true
+            moverSecurityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              fsGroup: 0
+          src:
+            enabled: true
+            trigger:
+              schedule: 30 1 * * *
+            moverSecurityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              fsGroup: 0

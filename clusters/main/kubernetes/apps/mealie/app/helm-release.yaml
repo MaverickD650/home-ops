@@ -1,0 +1,114 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mealie
+  namespace: mealie
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: mealie
+      version: 26.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+      interval: 15m
+      reconcileStrategy: Revision
+  timeout: 20m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    credentials:
+      s3:
+        type: s3
+        url: "${S3URL}"
+        bucket: "${S3PREFIX}-mealie"
+        accessKey: "${S3ID}"
+        secretKey: "${S3KEY}"
+        encrKey: "${S3KEY}"
+    mealie:
+      api:
+        smtp:
+          user: "${SMTP_USER}"
+          password: "${SMTP_PASSWORD}"
+          host: "${SMTP_HOST}"
+          port: 2525
+          from_name: Mealie
+          from_email: "${SMTP_EMAIL}"
+          auth_strategy: TLS
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: traefik
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure
+          traefik.ingress.kubernetes.io/router.tls: 'true'
+          traefik.ingress.kubernetes.io/router.middlewares: traefik-chain-basic@kubernetescrd
+        integrations:
+          traefik:
+            enabled: false
+          certManager:
+            enabled: true
+            certificateIssuer: domain-0-le-prod
+        hosts:
+          - host: mealie.${DOMAIN_0}
+            paths:
+              - path: /
+                pathType: Prefix
+    gatus:
+      endpoints:
+        - name: Mealie
+          group: Apps
+          url: "http://mealie.mealie.svc.cluster.local:10018"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
+    persistence:
+      data:
+        volsync:
+          - name: data
+            type: restic
+            credentials: s3
+            dest:
+              enabled: true
+            src:
+              enabled: true
+    cnpg:
+      main:
+        mode: recovery
+        cluster:
+          singleNode: true
+        backups:
+          enabled: true
+          retentionPolicy: "7d"
+          credentials: s3
+        recovery:
+          method: object_store
+          credentials: s3
