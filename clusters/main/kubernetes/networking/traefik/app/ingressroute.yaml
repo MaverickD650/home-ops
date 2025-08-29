@@ -13,3 +13,17 @@ spec:
       services:
         - kind: TraefikService
           name: api@internal
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/swagger.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: traefik-dns
+  namespace: traefik
+spec:
+  endpoints:
+    - dnsName: traefik.${DOMAIN_0}
+      recordTTL: 300
+      targets:
+        - ${TRAEFIK_IP}
+      recordType: A
