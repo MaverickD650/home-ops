@@ -94,7 +94,7 @@ spec:
     tlsStore:
       default:
         defaultCertificate:
-          secretName: "certificate-issuer-cloudflared-wildcard"
+          secretName: "certificate-issuer-domain-0-wildcard"
 
     gateway:
       enabled: true
@@ -110,7 +110,7 @@ spec:
           namespacePolicy:
             from: All
           certificateRefs:
-            - name: certificate-issuer-cloudflared-wildcard
+            - name: certificate-issuer-domain-0-wildcard
               kind: Secret
               group: ""
           mode: Terminate
