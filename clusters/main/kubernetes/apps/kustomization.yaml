@@ -7,4 +7,4 @@ resources:
   - linkwarden/ks.yaml
   - mealie/ks.yaml
   - snippet-box/ks.yaml
-  #- mend-renovate/ks.yaml
+  - mend-renovate/ks.yaml
