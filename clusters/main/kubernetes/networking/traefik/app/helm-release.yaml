@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: traefik
-      version: 37.0.0
+      version: 37.1.0
       sourceRef:
         kind: HelmRepository
         name: traefik
@@ -94,7 +94,7 @@ spec:
     tlsStore:
       default:
         defaultCertificate:
-          secretName: "certificate-issuer-cloudflared-wildcard"
+          secretName: "certificate-issuer-domain-0-wildcard"
 
     gateway:
       enabled: true
@@ -110,7 +110,7 @@ spec:
           namespacePolicy:
             from: All
           certificateRefs:
-            - name: certificate-issuer-cloudflared-wildcard
+            - name: certificate-issuer-domain-0-wildcard
               kind: Secret
               group: ""
           mode: Terminate
@@ -123,7 +123,7 @@ spec:
           external-dns.alpha.kubernetes.io/hostname: traefik.${DOMAIN_0}
         matchRule: Host(`traefik.${DOMAIN_0}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
         tls:
-          secretName: "certificate-issuer-cloudflared-wildcard"
+          secretName: "certificate-issuer-domain-0-wildcard"
         middlewares:
           - name: chain-basic
             namespace: traefik
@@ -174,6 +174,29 @@ spec:
               annotations:
                 summary: "Traefik Down"
                 description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
+    gatus:
+      endpoints:
+        - name: Traefik
+          group: Infrastructure
+          url: "http://traefik.traefik.svc.cluster.local:8080/ping"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
     ports:
       traefik:
         expose:

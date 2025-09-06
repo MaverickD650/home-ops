@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: snippet-box
-      version: 10.3.2
+      version: 10.3.4
       sourceRef:
         kind: HelmRepository
         name: truecharts
@@ -58,6 +58,29 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+    gatus:
+      endpoints:
+        - name: Snippet Box
+          group: Apps
+          url: "http://snippet-box.snippet-box.svc.cluster.local:5039"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
     persistence:
       data:
         volsync:

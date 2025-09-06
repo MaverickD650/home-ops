@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: linkwarden
-      version: 7.3.4
+      version: 7.4.2
       sourceRef:
         kind: HelmRepository
         name: truecharts
@@ -59,6 +59,29 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+    gatus:
+      endpoints:
+        - name: LinkWarden
+          group: Apps
+          url: "http://linkwarden.linkwarden.svc.cluster.local:2985"
+          interval: 1m
+          ui:
+            hide-url: true
+            hide-hostname: true
+          conditions:
+            - "[CONNECTED] == true"
+          alerts:
+            - type: discord
+              description: "healthcheck failed"
+              send-on-resolved: true
+    configmap:
+      gatus:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            {{- $.Values.gatus | toYaml | nindent 2 }}
     persistence:
       data:
         volsync:
