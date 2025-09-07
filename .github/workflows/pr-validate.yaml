@@ -130,7 +130,9 @@ jobs:
         id: diff
         run: |-
           echo 'diff<<EOF' >> $GITHUB_OUTPUT
+          echo '```diff' >> $GITHUB_OUTPUT
           cat diff.patch >> $GITHUB_OUTPUT
+          echo '```' >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
       - if: ${{ steps.diff.outputs.diff != '' }}
         name: Add Comment
