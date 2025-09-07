@@ -125,7 +125,6 @@ jobs:
             --limit-bytes 10000
             --all-namespaces
             --sources "cluster"
-            --api-versions=monitoring.coreos.com/v1
             --output-file diff.patch
       - name: Generate Diff
         id: diff
