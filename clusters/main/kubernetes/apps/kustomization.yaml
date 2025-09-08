@@ -6,4 +6,5 @@ resources:
   - kubernetes-dashboard/ks.yaml
   - linkwarden/ks.yaml
   - mealie/ks.yaml
+  - mend-renovate/ks.yaml
   - snippet-box/ks.yaml
