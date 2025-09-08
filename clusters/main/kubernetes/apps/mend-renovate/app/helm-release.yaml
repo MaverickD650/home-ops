@@ -43,6 +43,7 @@ spec:
                 MEND_RNV_GITHUB_APP_KEY: "${MEND_RNV_GITHUB_APP_KEY}"
                 MEND_RNV_WEBHOOK_SECRET: "${MEND_RNV_WEBHOOK_SECRET}"
                 MEND_RNV_AUTODISCOVER_FILTER: "maverickd650/test-cluster"
+                LOG_LEVEL: debug
     ingress:
       main:
         enabled: true
