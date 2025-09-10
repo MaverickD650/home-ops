@@ -75,6 +75,11 @@ jobs:
         resource:
           - helmrelease
           - kustomization
+        include:
+          - resource: helmrelease
+            extraArgs: "--api-versions=monitoring.coreos.com/v1"
+          - resource: kustomization
+            extraArgs: ""
       fail-fast: false
     steps:
       - name: Generate Token
@@ -125,6 +130,7 @@ jobs:
             --limit-bytes 10000
             --all-namespaces
             --sources "cluster"
+            ${{ matrix.extraArgs }}
             --output-file diff.patch
       - name: Generate Diff
         id: diff
