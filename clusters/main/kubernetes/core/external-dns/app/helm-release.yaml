@@ -67,4 +67,4 @@ spec:
       enabled: true
     env:
       - name: EXTERNAL_DNS_TRAEFIK_DISABLE_LEGACY
-        value: true
+        value: "true"
