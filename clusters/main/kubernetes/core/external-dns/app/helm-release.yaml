@@ -10,10 +10,10 @@ spec:
   chart:
     spec:
       chart: external-dns
-      version: 7.5.1
+      version: 1.19.0
       sourceRef:
         kind: HelmRepository
-        name: truecharts
+        name: external-dns
         namespace: flux-system
       interval: 15m
       reconcileStrategy: Revision
@@ -30,26 +30,41 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    externaldns:
-      logLevel: "info"
-      logFormat: "text"
-      interval: "60m"
-      provider: "pihole"
-      sources:
-        - "service"
-        - "ingress"
-        - "traefik-proxy"
-      domainFilters: []
-      zoneidFilters: []
-      registry: "noop"
-      policy: "upsert-only"  # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
-      piholeServer: "http://${PIIP}"
-      piholePassword: "${PIKEY}"
-      piholeAPIVersion: "6"
-    workload:
-      main:
-        podSpec:
-          containers:
-            main:
-              env:
-                EXTERNAL_DNS_TRAEFIK_DISABLE_LEGACY: "true"
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/kashalls/external-dns-unifi-webhook
+          tag: v0.6.2@sha256:cff737eb9d7d7d1e5aec49f510588e3172667dba3d4e7f544f0497b68c5f9c51
+        env:
+          - name: UNIFI_HOST
+            value: https://${UNIFI_HOST}
+          - name: UNIFI_API_KEY
+            value: ${UNIFI_API_KEY}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: http-webhook
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+    triggerLoopOnEvent: true
+    policy: sync
+    sources:
+      - service
+      - ingress
+      - traefik-proxy
+    txtOwnerId: main
+    txtPrefix: k8s.main.
+    domainFilters:
+      - ${DOMAIN_0}
+    serviceMonitor:
+      enabled: true
+    env:
+      - name: EXTERNAL_DNS_TRAEFIK_DISABLE_LEGACY
+        value: true
