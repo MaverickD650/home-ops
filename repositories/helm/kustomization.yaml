@@ -9,6 +9,7 @@ resources:
   - cloudnative-pg.yaml
   - csi-driver-nfs.yaml
   - descheduler.yaml
+  - external-dns.yaml
   - jetstack.yaml
   - kustomization.yaml
   - longhorn.yaml
