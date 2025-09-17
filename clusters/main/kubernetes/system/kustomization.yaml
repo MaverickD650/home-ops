@@ -6,7 +6,7 @@ resources:
   - kube-prometheus-stack/ks.yaml
   - kubernetes-reflector/ks.yaml
   - longhorn/ks.yaml
-  - metallb/ks.yaml
+  #- metallb/ks.yaml
   - openebs/ks.yaml
   - snapshot-controller/ks.yaml
   - traefik-crds/ks.yaml
