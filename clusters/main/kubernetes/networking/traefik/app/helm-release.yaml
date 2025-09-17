@@ -47,8 +47,7 @@ spec:
       enabled: true
       type: LoadBalancer
       annotations:
-        metallb.io/ip-allocated-from-pool: main
-        metallb.io/loadBalancerIPs: ${TRAEFIK_IP}
+        lbipam.cilium.io/ips: ${TRAEFIK_IPC}
       spec:
         externalTrafficPolicy: Local
     logs:

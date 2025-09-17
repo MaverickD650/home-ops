@@ -36,7 +36,7 @@ spec:
         loadBalancerIP: ${DASHBOARD_IP}
         integrations:
           metallb:
-            enabled: true
+            enabled: false
         ports:
           main:
             port: 80

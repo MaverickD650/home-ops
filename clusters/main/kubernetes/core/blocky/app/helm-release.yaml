@@ -37,10 +37,10 @@ spec:
     service:
       dns:
         externalTrafficPolicy: Local
-        loadBalancerIP: ${BLOCKY_IP}
+        loadBalancerIP: ${BLOCKY_IPC}
         type: LoadBalancer
         integrations:
-          metallb:
+          cilium:
             enabled: true
     defaultUpstreams:
       # Cloudflare

@@ -53,10 +53,10 @@ spec:
     service:
       main:
         type: LoadBalancer
-        loadBalancerIP: ${PLEX_IP}
+        loadBalancerIP: ${PLEX_IPC}
         integrations:
           metallb:
-            enabled: true
+            enabled: false
 
     gatus:
       endpoints:
