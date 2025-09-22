@@ -35,6 +35,7 @@ spec:
           containers:
             main:
               env:
-                UP_UNIFI_DEFAULT_URL: "https://${UNIFI_HOST}"
+                UP_UNIFI_URL: "https://${UNIFI_HOST}"
                 UP_UNIFI_APIKEY: "${UNIFI_API_KEY}"
                 UP_PROMETHEUS_DISABLE: false
+                UP_POLLER_DEBUG: true
