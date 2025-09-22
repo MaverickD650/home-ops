@@ -5,4 +5,4 @@ resources:
   - grafana/ks.yaml
   - speedtest-exporter/ks.yaml
   - truenas-exporter/ks.yaml
-  #- unpoller/ks.yaml
+  - unpoller/ks.yaml

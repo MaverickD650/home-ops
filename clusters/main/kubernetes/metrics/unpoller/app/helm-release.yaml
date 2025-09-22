@@ -36,5 +36,5 @@ spec:
             main:
               env:
                 UP_UNIFI_DEFAULT_URL: "https://${UNIFI_HOST}"
-                UP_UNIFI_DEFAULT_APIKEY: "${UNIFI_API_KEY}"
+                UP_UNIFI_APIKEY: "${UNIFI_API_KEY}"
                 UP_PROMETHEUS_DISABLE: false
