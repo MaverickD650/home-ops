@@ -23,7 +23,7 @@ spec:
   eventSeverity: info
   eventSources:
     - kind: HelmRelease
-      name: '*'
+      name: "*"
     - kind: HelmRelease
       name: "*"
       namespace: authelia
@@ -45,6 +45,9 @@ spec:
     - kind: HelmRelease
       name: "*"
       namespace: default
+    - kind: HelmRelease
+      name: "*"
+      namespace: external-dns
     - kind: HelmRelease
       name: "*"
       namespace: external-service
@@ -74,7 +77,13 @@ spec:
       namespace: kube-system
     - kind: HelmRelease
       name: "*"
+      namespace: kube-prometheus-stack
+    - kind: HelmRelease
+      name: "*"
       namespace: kubernetes-dashboard
+    - kind: HelmRelease
+      name: "*"
+      namespace: kubernetes-reflector
     - kind: HelmRelease
       name: "*"
       namespace: linkwarden
@@ -92,6 +101,9 @@ spec:
       namespace: media
     - kind: HelmRelease
       name: "*"
+      namespace: mend-renovate
+    - kind: HelmRelease
+      name: "*"
       namespace: metallb
     - kind: HelmRelease
       name: "*"
@@ -101,16 +113,10 @@ spec:
       namespace: openebs
     - kind: HelmRelease
       name: "*"
-      namespace: pi-external-service
-    - kind: HelmRelease
-      name: "*"
-      namespace: prometheus
-    - kind: HelmRelease
-      name: "*"
-      namespace: prometheus-operator
-    - kind: HelmRelease
-      name: "*"
       namespace: snapshot-controller
+    - kind: HelmRelease
+      name: "*"
+      namespace: snippet-box
     - kind: HelmRelease
       name: "*"
       namespace: speedtest-exporter
@@ -134,7 +140,7 @@ spec:
       namespace: truenas-exporter
     - kind: HelmRelease
       name: "*"
-      namespace: uptime-kuma
+      namespace: unpoller
     - kind: HelmRelease
       name: "*"
       namespace: volsync
