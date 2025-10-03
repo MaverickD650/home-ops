@@ -21,7 +21,7 @@ kubeconform_args=(
 )
 
 echo "=== Validating standalone manifests in ${KUBERNETES_DIR} ==="
-find "${KUBERNETES_DIR}" -maxdepth 1 -type f -name '*.yaml' -print0 | while IFS= read -r -d $'\0' file;
+find "${KUBERNETES_DIR}" -maxdepth 1 -type f -name '*.yaml' -a -not -path "${KUBERNETES_DIR}/clusterenv.yaml" -print0 | while IFS= read -r -d $'\0' file;
 do
     kubeconform "${kubeconform_args[@]}" "${file}"
     if [[ ${PIPESTATUS[0]} != 0 ]]; then
