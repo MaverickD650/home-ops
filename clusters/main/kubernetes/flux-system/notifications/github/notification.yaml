@@ -22,4 +22,4 @@ spec:
     name: github-status
   eventSources:
     - kind: Kustomization
-      name: "flux-entry"
+      name: "*"
