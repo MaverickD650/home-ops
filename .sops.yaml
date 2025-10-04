@@ -11,3 +11,9 @@ creation_rules:
   - path_regex: talsecret.yaml
     age: age1zfv0dcgrmyqcnatthxn9qfnang6pk3hz96z93wyd792u8vncc3sqea5udt
 ## DO NOT REMOVE: Personal setting go under this line
+  - path_regex: ^clusters.*components.*values.ya?ml$
+    age: age1zfv0dcgrmyqcnatthxn9qfnang6pk3hz96z93wyd792u8vncc3sqea5udt
+    encrypted_regex: "((?i)(displayname|email|pass|ca|id|bootstraptoken|secretboxencryptionsecret|secrets|secrets|password|cert|secret($|[^N])|key|token|^data$|^stringData))"
+  - path_regex: ^clusters.*components.*\.secret.ya?ml
+    age: age1zfv0dcgrmyqcnatthxn9qfnang6pk3hz96z93wyd792u8vncc3sqea5udt
+    encrypted_regex: "((?i)(displayname|email|pass|ca|id|bootstraptoken|secretboxencryptionsecret|secrets|secrets|password|cert|secret($|[^N])|key|token|^data$|^stringData))"

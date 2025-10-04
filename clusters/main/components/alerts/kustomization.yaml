@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+resources:
+  - ./discord
+  - ./github-status
+replacements:
+  - source:
+      kind: Namespace
+      fieldPath: metadata.name
+    targets:
+    - select:
+        kind: Provider
+        name: discord
+      fieldPaths:
+        - metadata.namespace
+      options:
+        create: true
+    - select:
+        kind: Provider
+        name: github-status
+      fieldPaths:
+        - metadata.namespace
+      options:
+        create: true
+    - select:
+        kind: Alert
+        name: discord
+      fieldPaths:
+        - metadata.namespace
+      options:
+        create: true
+    - select:
+        kind: Alert
+        name: discord-error
+      fieldPaths:
+        - metadata.namespace
+      options:
+        create: true
+    - select:
+        kind: Alert
+        name: github-status
+      fieldPaths:
+        - metadata.namespace
+      options:
+        create: true
