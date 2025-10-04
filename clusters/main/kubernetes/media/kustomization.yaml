@@ -12,5 +12,5 @@ resources:
   - plex/ks.yaml
   - stash/ks.yaml
   - stash2/ks.yaml
-components:
-  - ../../components/alerts
+# components:
+  # - ../../components/alerts
