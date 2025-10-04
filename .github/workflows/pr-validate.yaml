@@ -10,7 +10,7 @@ concurrency:
   group: ${{ github.head_ref }}-pr-validate
   cancel-in-progress: true
 env:
-  KUBERNETES_DIR: ./clusters/main
+  KUBERNETES_DIR: ./clusters/main/kubernetes
 
 jobs:
   kubeconform:
