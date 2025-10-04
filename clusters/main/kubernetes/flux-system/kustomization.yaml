@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - flux
   - monitoring
-  #- notifications
+  - notifications
   - weave
   - webhooks
