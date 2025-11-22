@@ -4,3 +4,5 @@ resources:
   - truenas-external-service/ks.yaml
   - haos-external-service/ks.yaml
   - namespace.yaml
+components:
+  - ../../components/alerts
