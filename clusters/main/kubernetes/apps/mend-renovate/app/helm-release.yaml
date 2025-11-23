@@ -102,7 +102,7 @@ spec:
       endpoints:
         - name: mend-renovate
           group: Infrastructure
-          url: "http://mend-renovate.mend-renovate.svc.cluster.local:80"
+          url: "http://mend-renovate-app-template.mend-renovate.svc.cluster.local:80"
           interval: 1m
           ui:
             hide-url: true
