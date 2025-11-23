@@ -5,3 +5,5 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - helm-release.yaml
+components:
+  - ../../../../components/alerts
