@@ -52,11 +52,12 @@ spec:
                 MEND_RNV_WEBHOOK_SECRET: "${MEND_RNV_WEBHOOK_SECRET}"
                 MEND_RNV_SERVER_PORT: "{{ .Values.service.main.ports.main.port }}"
                 MEND_RNV_AUTODISCOVER_FILTER: "maverickd650/home-ops"
-                MEND_RNV_REDIS_URL:
-                  secretKeyRef:
-                    expandObjectName: false
-                    name: '{{ printf "%s-%s" .Release.Name "rediscreds" }}'
-                    key: plainhostpass
+                MEND_RNV_DATA_HANDLER_TYPE: postgresql
+                PGDATABASE: "{{ .Values.cnpg.main.database }}"
+                PGUSER: "{{ .Values.cnpg.main.user }}"
+                PGPASSWORD: "{{ .Values.cnpg.main.creds.password }}"
+                PGHOST: "{{ .Values.cnpg.main.creds.host }}"
+                PGPORT: "5432"
                 LOG_LEVEL: debug
     ingress:
       main:
@@ -87,8 +88,15 @@ spec:
         runAsNonRoot: false
         runAsUser: 0
         runAsGroup: 0
-    redis:
-      enabled: true
+    cnpg:
+      main:
+        enabled: true
+        user: renovate
+        database: renovate
+        cluster:
+          singleNode: true
+        backups:
+          enabled: false
 
     gatus:
       endpoints:
