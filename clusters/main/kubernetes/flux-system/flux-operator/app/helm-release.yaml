@@ -20,4 +20,4 @@ spec:
       retries: 3
   values:
     serviceMonitor:
-      create: false
+      create: true
