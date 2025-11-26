@@ -1,9 +1,0 @@
-{
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    "github>trueforge-org/truecharts//.github/renovate/main.json5",
-    "github>MaverickD650/home-ops//.github/custom.json5"
-  ],
-    "gitAuthor": "mav-bot[bot] <185648356+mav-bot[bot]@users.noreply.github.com>"
-}
