@@ -11,5 +11,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.34.0
+    tag: 0.34.0@sha256:ca503048e774c040081f097ab1e03249557d7b5fadede4204149e0d3b34082df
   url: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
