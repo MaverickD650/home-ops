@@ -1,0 +1,55 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
+    "github>MaverickD650/home-ops//.renovate/autoMerge.json5",
+    "github>MaverickD650/home-ops//.renovate/changelogs.json5",
+    "github>MaverickD650/home-ops//.renovate/customManagers.json5",
+    "github>MaverickD650/home-ops//.renovate/grafanaDashboards.json5",
+    "github>MaverickD650/home-ops//.renovate/groups.json5",
+    "github>MaverickD650/home-ops//.renovate/labels.json5",
+    "github>MaverickD650/home-ops//.renovate/overrides.json5",
+    "github>MaverickD650/home-ops//.renovate/semanticCommits.json5",
+    "github>MaverickD650/home-ops//.renovate/upgradeBlock.json5",
+    ":automergeBranch",
+    ":disableRateLimiting",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":timezone(Europe/London)"
+  ],
+  "gitAuthor": "mav-bot[bot] <185648356+mav-bot[bot]@users.noreply.github.com>",
+  "rebaseWhen": "conflicted",
+  "prHourlyLimit": 0,
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "suppressNotifications": [
+    "prEditedNotification",
+    "prIgnoreNotification"
+  ],
+  "ignorePaths": [
+    "**/*.sops.*",
+    "**/resources/**"
+  ],
+  "flux": {
+    "fileMatch": [
+      "(^|/)clusters/.+\\.ya?ml$",
+      "(^|/)repositories/.+\\.ya?ml$",
+      "(^|/)kubernetes/.+\\.ya?ml$"
+    ],
+    "pinDigests": false,
+    "branchPrefix": "renovate/flux-"
+  },
+  "helm-values": {
+    "fileMatch": [
+      "(^|/)clusters/.+\\.ya?ml$",
+      "(^|/)kubernetes/.+-values\\.ya?ml$",
+      "(^|/)repositories/.+-values\\.ya?ml$",
+      "(^|/)charts/.+-values\\.ya?ml$"
+    ],
+    "branchPrefix": "renovate/helm-values-"
+  },
+  "kubernetes": {
+    "managerFilePatterns": ["/\\.yaml(?:\\.j2)?$/"]
+  }
+}
