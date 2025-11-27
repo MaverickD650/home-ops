@@ -6,7 +6,6 @@ metadata:
 resources:
   - bjw-s.yaml
   - cilium.yaml
-  - cloudnative-pg.yaml
   - csi-driver-nfs.yaml
   - descheduler.yaml
   - external-dns.yaml
