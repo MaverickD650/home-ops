@@ -6,13 +6,11 @@ metadata:
 resources:
   - cilium.yaml
   - csi-driver-nfs.yaml
-  - descheduler.yaml
   - external-dns.yaml
   - kustomization.yaml
   - longhorn.yaml
   - metallb.yaml
   - metrics-server.yaml
-  - nvidia.yaml
   - openebs.yaml
   - truecharts.yaml
   - weave-gitops.yaml
