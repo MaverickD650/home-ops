@@ -4,7 +4,6 @@ metadata:
   name: helm-repos
   namespace: flux-system
 resources:
-  - bjw-s.yaml
   - cilium.yaml
   - csi-driver-nfs.yaml
   - descheduler.yaml
@@ -18,7 +17,6 @@ resources:
   - stakater.yaml
   - truecharts.yaml
   - weave-gitops.yaml
-  - grafana.yaml
   - traefik.yaml
   - home-ops-mirror.yaml
 # more goes here!
