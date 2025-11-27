@@ -13,7 +13,6 @@ resources:
   - longhorn.yaml
   - metallb.yaml
   - metrics-server.yaml
-  - node-feature-discovery.yaml
   - nvidia.yaml
   - openebs.yaml
   - prometheus-community.yaml
