@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
   - helm-release.yaml
   - namespace.yaml
+  - ocirepository.yaml
 components:
   - ../../../../components/alerts
