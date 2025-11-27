@@ -8,7 +8,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: jetstack
+    name: cert-manager
     namespace: flux-system
   interval: 30m
   install:
