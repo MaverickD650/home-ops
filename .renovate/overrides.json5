@@ -12,6 +12,12 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["/factory\\.talos\\.dev/"],
       "overridePackageName": "ghcr.io/siderolabs/installer"
+    },
+    {
+      "description": "Keep devcontainer image on the v2.x series (avoid false 4.x tag)",
+      "matchManagers": ["devcontainer"],
+      "matchPackageNames": ["oci.trueforge.org/tccr/devcontainer"],
+      "allowedVersions": "/^v2\\./"
     }
   ]
 }
