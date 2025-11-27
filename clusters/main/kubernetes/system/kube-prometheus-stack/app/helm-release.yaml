@@ -6,16 +6,11 @@ metadata:
   name: kube-prometheus-stack
   namespace: kube-prometheus-stack
 spec:
-  interval: 15m
-  chart:
-    spec:
-      chart: kube-prometheus-stack
-      version: 79.8.2
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-        namespace: flux-system
-      interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
+    namespace: flux-system
+  interval: 30m
   timeout: 20m
   maxHistory: 3
   install:
