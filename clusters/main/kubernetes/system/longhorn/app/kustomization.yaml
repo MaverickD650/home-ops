@@ -8,3 +8,5 @@ resources:
   - snapshot-delete.yaml
   - trim.yaml
   - volumeSnapshotClass.yaml
+components:
+  - ../../../../components/alerts
