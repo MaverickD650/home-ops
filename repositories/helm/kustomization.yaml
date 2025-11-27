@@ -15,7 +15,6 @@ resources:
   - metrics-server.yaml
   - nvidia.yaml
   - openebs.yaml
-  - prometheus-community.yaml
   - stakater.yaml
   - truecharts.yaml
   - weave-gitops.yaml
