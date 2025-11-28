@@ -6,5 +6,4 @@ resources:
   - flux-instance/ks.yaml
   - monitoring
   - notifications
-  - weave
   - webhooks
