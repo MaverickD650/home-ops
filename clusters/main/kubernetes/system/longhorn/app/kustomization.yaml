@@ -4,6 +4,7 @@ resources:
   - namespace.yaml
   - helm-release.yaml
   - ingress.yaml
+  - ocirepository.yaml
   - snapshot-cleanup.yaml
   - snapshot-delete.yaml
   - trim.yaml
