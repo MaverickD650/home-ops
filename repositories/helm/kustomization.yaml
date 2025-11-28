@@ -6,4 +6,5 @@ metadata:
 resources:
   - kustomization.yaml
   - truecharts.yaml
+  - home-ops-mirror.yaml
 # more goes here!
