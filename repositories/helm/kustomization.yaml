@@ -11,6 +11,5 @@ resources:
   - metallb.yaml
   - openebs.yaml
   - truecharts.yaml
-  - traefik.yaml
   - home-ops-mirror.yaml
 # more goes here!
