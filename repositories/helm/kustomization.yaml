@@ -6,7 +6,6 @@ metadata:
 resources:
   - cilium.yaml
   - csi-driver-nfs.yaml
-  - external-dns.yaml
   - kustomization.yaml
   - longhorn.yaml
   - metallb.yaml
