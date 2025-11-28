@@ -34,5 +34,5 @@ spec:
         type: LoadBalancer
         loadBalancerIP: ${TNEXPORTIP}
         integrations:
-          metallb:
+          cilium:
             enabled: true
