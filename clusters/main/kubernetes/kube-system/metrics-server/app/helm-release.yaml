@@ -5,16 +5,11 @@ metadata:
   name: metrics-server
   namespace: kube-system
 spec:
-  interval: 15m
-  chart:
-    spec:
-      chart: metrics-server
-      version: 3.13.0
-      sourceRef:
-        kind: HelmRepository
-        name: home-ops-mirror
-        namespace: flux-system
-      interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: metrics-server
+    namespace: flux-system
+  interval: 30m
   timeout: 20m
   maxHistory: 3
   driftDetection:
