@@ -7,7 +7,6 @@ resources:
   - cilium.yaml
   - kustomization.yaml
   - longhorn.yaml
-  - openebs.yaml
   - truecharts.yaml
   - home-ops-mirror.yaml
 # more goes here!
