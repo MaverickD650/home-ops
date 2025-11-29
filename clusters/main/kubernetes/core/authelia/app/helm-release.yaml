@@ -8,7 +8,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: truecharts
+    name: authelia
     namespace: flux-system
   interval: 30m
   timeout: 20m
