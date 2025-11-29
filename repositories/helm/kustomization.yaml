@@ -3,7 +3,4 @@ kind: Kustomization
 metadata:
   name: helm-repos
   namespace: flux-system
-resources:
-  - kustomization.yaml
-  - truecharts.yaml
-# more goes here!
+resources: []
